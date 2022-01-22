@@ -2,13 +2,14 @@ from flask import Flask
 import cv2
 import base64
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route("/")
 def hello():
-    return "Hello, World!"
+    return 'Hello'
 
 @app.route("/camera")
 def camera():
@@ -17,4 +18,8 @@ def camera():
     retval, buffer = cv2.imencode('.jpg', image)
     jpg_as_text = base64.b64encode(buffer)
     cap.release()
-    return 'data: image/png;base64,' + jpg_as_text.decode("utf-8")
+    res = {
+        'prefix': 'data: image/png;base64,',
+        'data': jpg_as_text.decode("utf-8")
+    }
+    return json.dumps(res)
